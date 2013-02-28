@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="uk.ac.ebi.ena.cram.checksum.db">
+	<select id="selectChecksumSequenceInfoByMD5" parameterType="String"
+		resultType="ChecksumSequenceInfo">
+		select
+		md5 as md5Checksum,
+		sha1 as sha1Checksum,
+		seq as sequence
+		from
+		eta.reference
+		where
+		md5 = #{md5Checksum}
+	</select>
+	
+	<select id="selectChecksumSequenceInfoBySHA1" parameterType="String"
+		resultType="ChecksumSequenceInfo">
+		select
+		md5 as md5Checksum,
+		sha1 as sha1Checksum,
+		seq as sequence
+		from
+		eta.reference
+		where
+		sha1 = #{md5Checksum}
+	</select>
+	
+	<insert id="insertChecksumSequenceInfo" parameterType="ChecksumSequenceInfo">
+		insert into eta.reference(md5,sha1,seq) 
+		values (#{md5Checksum},#{sha1Checksum},#{sequence})
+	</insert>
+</mapper>
