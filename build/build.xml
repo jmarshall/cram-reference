@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project basedir="../" default="help" name="_template">
+<project name="cram-reference" basedir="../" default="help">
 
 	<property environment="env" />
 
-	<property name="src" value="${basedir}/src" />
+	<property name="src.main" value="${basedir}/src/main/java" />
+	<property name="src.test" value="${basedir}/src/test/java" />
+	<property name="resources.main" value="${basedir}/src/main/resources" />
 	<property name="build.home" value="${basedir}/build" />
 	<property name="lib.home" value="${basedir}/lib" />
 	<property name="target.dir" value="${basedir}/target" />
 	<property name="classes" value="${target.dir}/classes" />
-	<property name="jar.file.name" value="cram-reference" />
+	<property name="jar.file.name" value="${ant.project.name}" />
 
 	<path id="classpath">
 		<fileset dir="${lib.home}" includes="*.jar" />
@@ -22,15 +24,33 @@
 		</fileset>
 	</path>
 
-	<pathconvert property="mf.classpath" pathsep=" ">
-		<path refid="build.classpath" />
-		<mapper>
-			<chainedmapper>
-				<flattenmapper />
-				<globmapper from="*.jar" to="lib/*.jar" />
-			</chainedmapper>
-		</mapper>
-	</pathconvert>
+	<target name="jar" depends="compile">
+		<property file="version.number" />
+		<buildnumber />
+
+		<tstamp>
+			<format property="TODAY" pattern="dd-MM-yyyy HH:mm:ss" />
+		</tstamp>
+		<echo>building ${jar.file.name}-${version.num}.jar</echo>
+		<jar basedir="${classes}" destfile="${target.dir}/${jar.file.name}-${version.num}.jar" duplicate="preserve">
+			<fileset dir="${resources.main}">
+				<include name="**/*.properties" />
+			</fileset>
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Implementation-Version" value="${version.num}-b${build.number}" />
+				<attribute name="Built-Date" value="${TODAY}" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="war" depends="clean,compile">
+		<echo>building ${target.dir}/${jar.file.name}.war</echo>
+		<war destfile="${target.dir}/${jar.file.name}.war" webxml="webapp/web.xml">
+			<lib dir="${lib.home}" />
+			<classes dir="${classes}" />
+		</war>
+	</target>
 
 	<target name="runnable" depends="clean,compile">
 
@@ -41,7 +61,7 @@
 			<format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss" />
 		</tstamp>
 
-		<jar destfile="${basedir}/${jar.file.name}-${version.num}.jar" filesetmanifest="skip" duplicate="preserve">
+		<jar destfile="${target.dir}/${jar.file.name}-${version.num}.jar" filesetmanifest="skip" duplicate="preserve">
 			<fileset dir="${classes}" />
 			<zipgroupfileset dir="lib" includes="*.jar">
 				<!-- exclude name="**/class_to_exclude.class" -->
@@ -82,9 +102,8 @@
 	</target>
 
 	<target name="compile" depends="setup">
-		<javac debug="true" fork="true" destdir="${classes}" srcdir="${src}/main/java:${src}/test/java">
+		<javac debug="true" fork="true" destdir="${classes}" srcdir="${src.main}:${src.test}">
 			<include name="**/*.java" />
-			<exclude name="**/Crambone.java" />
 			<classpath refid="classpath" />
 		</javac>
 		<copy todir="${classes}">
@@ -96,12 +115,11 @@
 	<target name="help">
 		<property file="version.property" />
 
-		<echo message="cramtools build xml, version ${version.num}" />
+		<echo message="cram-reference build xml, version ${version.num}" />
 		<echo message="Available targets: " />
 		<echo message="	clean" />
 		<echo message="	compile" />
-		<echo message="	test" />
-		<echo message="	runnable" />
+		<echo message="	jar" />
 	</target>
 
 </project>
