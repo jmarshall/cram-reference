@@ -46,10 +46,13 @@
 
 	<target name="war" depends="clean,compile">
 		<echo>building ${target.dir}/${jar.file.name}.war</echo>
+		<copy file="webapp/log4j.properties" todir="${classes}"></copy>
 		<war destfile="${target.dir}/${jar.file.name}.war" webxml="webapp/web.xml">
 			<lib dir="${lib.home}" />
-			<classes dir="${classes}" />
+			<classes dir="${classes}">
+			</classes>
 		</war>
+		<delete file="${classes}/log4j.properties"></delete>
 	</target>
 
 	<target name="runnable" depends="clean,compile">
