@@ -112,6 +112,16 @@
 		</copy>
 	</target>
 
+	<target name="deploy-war-to-test" depends="war">
+		<scp file="${target.dir}/${jar.file.name}.war" keyfile="/Users/neilg/.ssh/id_dsa" remoteTodir="tc_user@jweb-1a:/ebi/www/jtest/deploy/tc-search/">
+		</scp>
+	</target>
+
+	<target name="deploy-war-to-production" depends="war">
+		<scp file="${target.dir}/${jar.file.name}.war" keyfile="/Users/neilg/.ssh/id_dsa" remoteTodir="tc_user@jweb-3a:/ebi/www/jlive/deploy/tc-search/">
+		</scp>
+	</target>
+
 	<target name="help">
 		<property file="version.property" />
 

@@ -32,27 +32,27 @@ public class ChecksumDBImp {
 	}
 	*/
 	
-	public ChecksumDBImp (String environment) throws IOException {
+	public ChecksumDBImp (String environment) throws Exception {
 		String resource = "uk/ac/ebi/ena/cram/checksum/db/Configuration.xml";
 		Reader reader;
 		try {
 			reader = Resources.getResourceAsReader(resource);
 			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader, environment);
 			session = sqlSessionFactory.openSession();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			log.error("Error ChecksumDBImp",e);
 			throw e;
 		}
 	}
 	
-	public ChecksumDBImp () throws IOException {
+	public ChecksumDBImp () throws Exception {
 		String resource = "uk/ac/ebi/ena/cram/checksum/db/Configuration.xml";
 		Reader reader;
 		try {
 			reader = Resources.getResourceAsReader(resource);
 			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
 			session = sqlSessionFactory.openSession();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			log.error("Error ChecksumDBImp",e);
 			throw e;
 		}
@@ -117,6 +117,11 @@ public class ChecksumDBImp {
 			throw new Exception(e.getMessage());
 		} 
 		return rowsInserted;
+	}
+	
+	public void closeSession () {
+		System.out.println("Close session called");
+		session.close();
 	}
 	
 }

@@ -24,11 +24,12 @@ public class ChecksumService {
 			try {
 				checksumDBImp = new ChecksumDBImp(ChecksumDBImp.TOMCAT_ETATST_ENV);
 				checksumSequenceInfo = checksumDBImp.selectChecksumSequenceInfoByMD5(msg);
-				
+				checksumDBImp.closeSession();
 			} catch (Exception e) {
 				e.printStackTrace();
+				return Response.status(200).entity(e.getMessage()).build();
 			}
-			String output = "Jersey say : " + checksumDBImp;
+//			String output = "Jersey say : " + checksumDBImp;
 			if (checksumSequenceInfo != null) {
 				return Response.status(200).entity(checksumSequenceInfo.getSequence()).build();
 			}
@@ -47,9 +48,10 @@ public class ChecksumService {
 			try {
 				checksumDBImp = new ChecksumDBImp(ChecksumDBImp.TOMCAT_ETATST_ENV);
 				checksumSequenceInfo = checksumDBImp.selectChecksumSequenceInfoBySHA1(msg);
-				
+				checksumDBImp.closeSession();
 			} catch (Exception e) {
 				e.printStackTrace();
+				return Response.status(200).entity(e.getMessage()).build();
 			}
 			String output = "Jersey say : " + checksumDBImp;
 			if (checksumSequenceInfo != null) {
