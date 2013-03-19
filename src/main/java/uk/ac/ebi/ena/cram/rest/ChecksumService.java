@@ -26,15 +26,15 @@ public class ChecksumService {
 				checksumSequenceInfo = checksumDBImp.selectChecksumSequenceInfoByMD5(msg);
 				checksumDBImp.closeSession();
 			} catch (Exception e) {
-				e.printStackTrace();
-				return Response.status(200).entity(e.getMessage()).build();
+//				e.printStackTrace();
+				return Response.status(404).entity(e.getMessage()).build();
 			}
-//			String output = "Jersey say : " + checksumDBImp;
+
 			if (checksumSequenceInfo != null) {
-				return Response.status(200).entity(checksumSequenceInfo.getSequence()).build();
+				return Response.ok().entity(checksumSequenceInfo.getSequence()).build();
 			}
 			else {
-				return Response.noContent().build();
+				return Response.status(404).build();
 			}
 	 
 	 
@@ -50,10 +50,10 @@ public class ChecksumService {
 				checksumSequenceInfo = checksumDBImp.selectChecksumSequenceInfoBySHA1(msg);
 				checksumDBImp.closeSession();
 			} catch (Exception e) {
-				e.printStackTrace();
+//				e.printStackTrace();
 				return Response.status(200).entity(e.getMessage()).build();
 			}
-			String output = "Jersey say : " + checksumDBImp;
+
 			if (checksumSequenceInfo != null) {
 				return Response.status(200).entity(checksumSequenceInfo.getSequence()).build();
 			}
