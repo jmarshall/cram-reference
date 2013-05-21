@@ -29,4 +29,11 @@
 		insert into eta.reference(md5,sha1,seq) 
 		values (#{md5Checksum},#{sha1Checksum},#{sequence})
 	</insert>
+	
+	<select id="testDatabase" resultType="String">
+		select 
+		sysdate
+		from
+		dual
+	</select>
 </mapper>

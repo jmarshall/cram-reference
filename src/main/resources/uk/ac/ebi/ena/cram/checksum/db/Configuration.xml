@@ -14,7 +14,7 @@
 		<typeAlias type="uk.ac.ebi.ena.cram.checksum.db.ChecksumSequenceInfo"
 			alias="ChecksumSequenceInfo" />
 	</typeAliases>
-	<environments default="ESATST_UNPOOLED">
+	<environments default="ETAPRO_TOMCAT">
 		<environment id="ETATST_UNPOOLED">
 			<transactionManager type="JDBC" />
 			<dataSource type="UNPOOLED">
@@ -35,7 +35,7 @@
 				<property name="password" value="reader" />
 			</dataSource>
 		</environment>
-		<environment id="ETATST_TOMCAT">
+		<environment id="ETAPRO_TOMCAT">
 			<transactionManager type="JDBC" />
 			<dataSource type="JNDI">
 			    <property name="initial_context" value="java:comp/env"/>
