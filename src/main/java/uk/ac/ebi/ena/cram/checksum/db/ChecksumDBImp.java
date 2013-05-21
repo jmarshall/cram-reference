@@ -14,11 +14,12 @@ public class ChecksumDBImp {
 	public static final String SELECT_CHECKSUM_DB_INFO_BY_MD5 = "uk.ac.ebi.ena.cram.checksum.db.selectChecksumSequenceInfoByMD5";
 	public static final String SELECT_CHECKSUM_DB_INFO_BY_SHA1 = "uk.ac.ebi.ena.cram.checksum.db.selectChecksumSequenceInfoBySHA1";
 	public static final String INSERT_CHECKSUM_DB_INFO = "uk.ac.ebi.ena.cram.checksum.db.insertChecksumSequenceInfo";
+	public static final String TEST_DATABASE = "uk.ac.ebi.ena.cram.checksum.db.testDatabase";
 	
 //	private static SqlSessionFactory sqlSessionFactory;
 	static Logger log = Logger.getLogger(ChecksumDBImp.class);
 	private SqlSession session;
-	public static final String TOMCAT_ETATST_ENV = "ETATST_TOMCAT";
+	public static final String TOMCAT_ETAPRO_ENV = "ETAPRO_TOMCAT";
 	
 	/*
 	static {
@@ -39,6 +40,7 @@ public class ChecksumDBImp {
 			reader = Resources.getResourceAsReader(resource);
 			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader, environment);
 			session = sqlSessionFactory.openSession();
+			log.info("connected to " + session);
 		} catch (Exception e) {
 			log.error("Error ChecksumDBImp",e);
 			throw e;
@@ -119,8 +121,19 @@ public class ChecksumDBImp {
 		return rowsInserted;
 	}
 	
+	public String testDatabase () throws Exception {
+	    String dateString = null;
+        try {
+            dateString = (String) session.selectOne(TEST_DATABASE);
+        } catch (Exception e) {
+            log.error("selectChecksumSequenceInfoByMD5" + e.getMessage());
+            throw new Exception(e.getMessage());
+        } 
+        return dateString;
+	}
+	
 	public void closeSession () {
-		System.out.println("Close session called");
+		log.info("Disconnected from " + session);
 		session.close();
 	}
 	
