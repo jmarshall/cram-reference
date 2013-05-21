@@ -15,6 +15,29 @@ import uk.ac.ebi.ena.cram.checksum.db.ChecksumSequenceInfo;
 @Path("/")
 public class ChecksumService {
 
+    @GET
+    @Path("/test")
+    public Response testDatabase() {
+        ChecksumDBImp checksumDBImp = null;
+        String dateString = null;
+        try {
+            checksumDBImp = new ChecksumDBImp(ChecksumDBImp.TOMCAT_ETAPRO_ENV);
+            dateString = checksumDBImp.testDatabase();
+            checksumDBImp.closeSession();
+        } catch (Exception e) {
+            return Response.status(404).entity(e.getMessage()).build();
+        }
+
+        if (dateString != null) {
+            return Response.ok().entity(dateString).build();
+        }
+        else {
+            return Response.status(404).build();
+        }
+ 
+ 
+    }
+    
 	
 		@GET
 		@Path("/md5/{param}")
@@ -22,7 +45,7 @@ public class ChecksumService {
 			ChecksumDBImp checksumDBImp = null;
 			ChecksumSequenceInfo checksumSequenceInfo = null;
 			try {
-				checksumDBImp = new ChecksumDBImp(ChecksumDBImp.TOMCAT_ETATST_ENV);
+				checksumDBImp = new ChecksumDBImp(ChecksumDBImp.TOMCAT_ETAPRO_ENV);
 				checksumSequenceInfo = checksumDBImp.selectChecksumSequenceInfoByMD5(msg);
 				checksumDBImp.closeSession();
 			} catch (Exception e) {
@@ -46,7 +69,7 @@ public class ChecksumService {
 			ChecksumDBImp checksumDBImp = null;
 			ChecksumSequenceInfo checksumSequenceInfo = null;
 			try {
-				checksumDBImp = new ChecksumDBImp(ChecksumDBImp.TOMCAT_ETATST_ENV);
+				checksumDBImp = new ChecksumDBImp(ChecksumDBImp.TOMCAT_ETAPRO_ENV);
 				checksumSequenceInfo = checksumDBImp.selectChecksumSequenceInfoBySHA1(msg);
 				checksumDBImp.closeSession();
 			} catch (Exception e) {
