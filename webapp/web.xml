@@ -16,8 +16,26 @@
 	</init-param>
 	<load-on-startup>1</load-on-startup>
 </servlet>
+<servlet>
+<servlet-name>ChecksumServlet</servlet-name>
+	<servlet-class>
+		uk.ac.ebi.ena.cram.checksum.ChecksumServlet
+	</servlet-class>
+</servlet>
 <servlet-mapping>
-	<servlet-name>JerseyWebApplication</servlet-name>
-	<url-pattern>/*</url-pattern>
+	<servlet-name>ChecksumServlet</servlet-name>
+	<url-pattern>/ena/cram/*</url-pattern>
+</servlet-mapping>
+<servlet-mapping>
+<servlet-name>ChecksumServlet</servlet-name>
+<url-pattern>/sha1/*</url-pattern>
+</servlet-mapping>
+<servlet-mapping>
+<servlet-name>ChecksumServlet</servlet-name>
+<url-pattern>/md5/*</url-pattern>
+</servlet-mapping>
+<servlet-mapping>
+<servlet-name>ChecksumServlet</servlet-name>
+<url-pattern>/test</url-pattern>
 </servlet-mapping>
 </web-app>

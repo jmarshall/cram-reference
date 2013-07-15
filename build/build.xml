@@ -3,7 +3,8 @@
 <project name="cram-reference" basedir="../" default="help">
 
 	<property environment="env" />
-
+	<property name="tomcat.home" value="${env.TOMCAT_HOME}" />
+	<property name="tomcat.lib" value="${tomcat.home}/lib" />
 	<property name="src.main" value="${basedir}/src/main/java" />
 	<property name="src.test" value="${basedir}/src/test/java" />
 	<property name="resources.main" value="${basedir}/src/main/resources" />
@@ -15,7 +16,7 @@
 
 	<path id="classpath">
 		<fileset dir="${lib.home}" includes="*.jar" />
-		<fileset dir="lib" includes="*.jar" />
+		<fileset dir="${tomcat.lib}" includes="*.jar" />
 	</path>
 
 	<path id="build.classpath">
@@ -23,6 +24,16 @@
 			<include name="${lib.home}/*.jar" />
 		</fileset>
 	</path>
+
+	<pathconvert property="mf.classpath" pathsep=" ">
+		<path refid="build.classpath" />
+		<mapper>
+			<chainedmapper>
+				<flattenmapper />
+				<globmapper from="*.jar" to="lib/*.jar" />
+			</chainedmapper>
+		</mapper>
+	</pathconvert>
 
 	<target name="jar" depends="compile">
 		<property file="version.number" />
@@ -46,13 +57,18 @@
 
 	<target name="war" depends="clean,compile">
 		<echo>building ${target.dir}/${jar.file.name}.war</echo>
-		<copy file="webapp/log4j.properties" todir="${classes}"></copy>
+		<copy file="webapp/log4j.properties" todir="${classes}">
+		</copy>
 		<war destfile="${target.dir}/${jar.file.name}.war" webxml="webapp/web.xml">
-			<lib dir="${lib.home}" />
+			<lib dir="${lib.home}">
+				<exclude name="ojdbc14.jar" />
+				<exclude name="tomcat-dbcp.jar" />
+			</lib>
 			<classes dir="${classes}">
 			</classes>
 		</war>
-		<delete file="${classes}/log4j.properties"></delete>
+		<delete file="${classes}/log4j.properties">
+		</delete>
 	</target>
 
 	<target name="runnable" depends="clean,compile">
@@ -66,6 +82,7 @@
 
 		<jar destfile="${target.dir}/${jar.file.name}-${version.num}.jar" filesetmanifest="skip" duplicate="preserve">
 			<fileset dir="${classes}" />
+			<fileset dir="${resources.main}" />
 			<zipgroupfileset dir="lib" includes="*.jar">
 				<!-- exclude name="**/class_to_exclude.class" -->
 			</zipgroupfileset>
@@ -120,8 +137,8 @@
 		</scp>
 	</target>
 
-	<target name="deploy-war-to-production" depends="war">
-		<scp file="${target.dir}/${jar.file.name}.war" keyfile="/Users/neilg/.ssh/id_dsa" remoteTodir="tc_user@jweb-3a:/ebi/www/jlive/deploy/tc-search/">
+	<target name="deploy-war-to-staging" depends="war">
+		<scp file="${target.dir}/${jar.file.name}.war" keyfile="/Users/neilg/.ssh/id_dsa" remoteTodir="datalib@ebi-003:/nfs/production/panda/production/ena/cram_reference/tomcat_staging/tc-ena-cram">
 		</scp>
 	</target>
 
@@ -133,6 +150,9 @@
 		<echo message="	clean" />
 		<echo message="	compile" />
 		<echo message="	jar" />
+		<echo message=" war" />
+		<echo message=" deploy-war-to-test" />
+		<echo message=" deploy-war-to-production" />
 	</target>
 
 </project>
