@@ -95,6 +95,7 @@ public class ChecksumServlet extends HttpServlet{
                     .toString());
             statement.setString(1, checksum);
             ResultSet resultSet = statement.executeQuery();
+            
             if (resultSet.next()) {
                 Object clobObject = resultSet.getObject(3);
                 Clob clob = (oracle.sql.CLOB)clobObject;
@@ -106,19 +107,21 @@ public class ChecksumServlet extends HttpServlet{
             } else {
                 resp.sendError(404);
             }
+            resultSet.close();
             } else {
                 resp.sendError(404);
             }
             
             
         } catch (Exception e) {
+            logger.error("Exception in ChecksumServlet", e);
             resp.sendError(404);
         } finally {
             closeConnection(statement,connection);
         }
     }
     
-    public static OracleConnection getConnectionFromContext(String contextName) {
+    public static Connection getConnectionFromContext(String contextName) {
         Connection connection = null;
         OracleConnection oracleConnection = null;
 
@@ -129,25 +132,19 @@ public class ChecksumServlet extends HttpServlet{
 
             DataSource ds = (DataSource) envCtx.lookup(contextName);
             connection = ds.getConnection();
-            Connection actualConnection = ((javax.sql.PooledConnection)connection).getConnection();
-            oracleConnection = (OracleConnection)actualConnection;
-            if (connection instanceof org.apache.tomcat.dbcp.dbcp.DelegatingConnection) {
-                DelegatingConnection dc = (DelegatingConnection) connection;
-                oracleConnection = (OracleConnection) dc.getInnermostDelegate();
-            }
                 
         } catch (NamingException ne) {
             logger.error("getExonerateConnection", ne);
         } catch (SQLException se) {
             logger.error("getExonerateConnection", se);
         }
-        return oracleConnection;
+        return connection;
     }
     
     public static void closeConnection (Statement statement, Connection connection) {
         try {
-            statement.close();
-            connection.close();
+            if (statement != null) statement.close();
+            if (connection != null) connection.close();
         } catch (SQLException e) {
             logger.error("error closeConnection",e);
         }
