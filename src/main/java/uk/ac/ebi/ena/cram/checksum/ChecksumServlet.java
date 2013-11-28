@@ -42,7 +42,7 @@ public class ChecksumServlet extends HttpServlet{
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         // TODO Auto-generated method stub
-        resp.setContentType("text/text");
+        resp.setContentType("text/plain");
         String uriString = req.getRequestURI();
         String [] uriSplitString = uriString.split("/");
         String method = null;
@@ -99,6 +99,8 @@ public class ChecksumServlet extends HttpServlet{
             if (resultSet.next()) {
                 Object clobObject = resultSet.getObject(3);
                 Clob clob = (oracle.sql.CLOB)clobObject;
+                if (clob.length() <= Integer.MAX_VALUE)
+                    resp.setContentLength((int)clob.length());
                 Reader char_stream = clob.getCharacterStream();
                 int c;
                 while ((c = char_stream.read()) != -1) {
